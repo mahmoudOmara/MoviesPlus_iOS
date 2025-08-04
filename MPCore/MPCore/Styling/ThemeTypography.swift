@@ -1,0 +1,16 @@
+//
+//  ThemeTypography.swift
+//  MPCore
+//
+//  Created by mac on 05/08/2025.
+//
+
+
+import SwiftUI
+
+/// Typography system for consistent text styling
+public struct ThemeTypography {
+    public let body = Font.body
+    public let caption = Font.caption
+    public let button = Font.headline
+}
