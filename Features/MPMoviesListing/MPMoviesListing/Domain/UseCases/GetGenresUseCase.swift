@@ -7,10 +7,9 @@
 
 
 import Foundation
-import MPCore
 import Combine
 
-/// Use case for getting movie genres with caching and filtering support
+/// Use case for getting movie genres
 /// Manages genre data access and provides filtering capabilities
 public final class GetGenresUseCase {
     
