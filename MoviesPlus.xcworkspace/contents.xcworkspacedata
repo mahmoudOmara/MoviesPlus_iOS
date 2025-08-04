@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:MoviesApp/MoviesApp.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:MPCore/MPCore.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Features/MPMoviesListing/MPMoviesListing.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Features/MPMovieDetails/MPMovieDetails.xcodeproj">
+   </FileRef>
+</Workspace>
