@@ -22,6 +22,12 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
     
     /// Whether we can load more movies (pagination)
     @Published public var canLoadMore: Bool = true
+    
+    /// Direct published movies array to maintain scroll position
+    @Published public var movies: [Movie] = []
+    
+    /// Available genres for filtering
+    @Published public var genres: [Genre] = []
 
     // MARK: - Published Properties - Search State
 
@@ -33,18 +39,6 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
 
     /// Recent search queries
     @Published public var recentSearches: [String] = []
-
-    // MARK: - Data (Computed from BaseViewModel state)
-
-    /// Current list of movies
-    public var movies: [Movie] {
-         data?.movies ?? []
-     }
-    
-    /// Available genres for filtering
-     public var genres: [Genre] {
-         data?.genres ?? []
-     }
     
     // MARK: - Dependencies
     
@@ -92,6 +86,8 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
                 }
             },
             receiveValue: { [weak self] movies, genres in
+                self?.movies = movies
+                self?.genres = genres
                 self?.setSuccess((movies, genres))
                 self?.canLoadMore = movies.count >= Self.itemsPerPage
             }
@@ -178,10 +174,9 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
                 },
                 receiveValue: { [weak self] newMovies in
                     guard let self = self else { return }
-                    let currentMovies = self.movies
-                    let combinedMovies = currentMovies + newMovies
                     
-                    self.setSuccess((combinedMovies, self.genres))
+                    self.movies.append(contentsOf: newMovies)
+                    self.setSuccess((self.movies, self.genres))
                     self.canLoadMore = newMovies.count >= Self.itemsPerPage
                 }
             )
@@ -193,7 +188,7 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
     private func performSearch(refresh: Bool) {
         let page = refresh ? 1 : currentPage
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         if refresh {
             setLoading()
         } else {
@@ -211,8 +206,13 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
                 receiveValue: { [weak self] searchResults in
                     guard let self = self else { return }
                     
-                    let finalResults = refresh ? searchResults : self.movies + searchResults
-                    self.setSuccess((finalResults, self.genres))
+                    if refresh {
+                        self.movies = searchResults
+                    } else {
+                        self.movies.append(contentsOf: searchResults)
+                    }
+                    
+                    self.setSuccess((self.movies, self.genres))
                     self.canLoadMore = searchResults.count >= Self.itemsPerPage
                 }
             )
