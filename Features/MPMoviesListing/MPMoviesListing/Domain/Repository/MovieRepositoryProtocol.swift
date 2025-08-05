@@ -26,20 +26,9 @@ public protocol MovieRepositoryProtocol {
     /// - Returns: Publisher emitting array of genres or error
     func getGenres() -> AnyPublisher<[Genre], Error>
     
-    // MARK: - Cache Operations
-    
-    /// Gets cached movies for offline usage
-    /// - Parameter page: Page number for pagination
-    /// - Returns: Publisher emitting cached movies or error
-    func getCachedMovies(page: Int) -> AnyPublisher<[Movie], Error>
-    
-    /// Gets cached genres
-    /// - Returns: Publisher emitting cached genres or error
-    func getCachedGenres() -> AnyPublisher<[Genre], Error>
-    
-    /// Searches for movies by query text with pagination
+    /// Searches for movies by query text in the cached movies
     /// - Parameters:
     ///   - query: Search query text
     /// - Returns: Publisher emitting array of movies or error
-    func searchMovies(query: String) -> AnyPublisher<[Movie], Error>
+    func searchMovies(query: String, page: Int) -> AnyPublisher<[Movie], Error>
 }

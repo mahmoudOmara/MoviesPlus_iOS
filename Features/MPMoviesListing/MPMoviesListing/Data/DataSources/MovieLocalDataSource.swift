@@ -88,7 +88,7 @@ public final class MovieLocalDataSource {
     /// Gets cached movies for a specific page
     /// - Parameter page: Page number to retrieve
     /// - Returns: Publisher emitting cached movies
-    public func getCachedMovies(page: Int) -> AnyPublisher<[Movie], Error> {
+    public func getCachedMovies(page: Int) -> AnyPublisher<[LocalMovieModel], Error> {
         
         return Future { [weak self] promise in
             guard let self = self else {
@@ -120,9 +120,8 @@ public final class MovieLocalDataSource {
                     }
                     
                     let pageMovies = Array(allMovies[startIndex..<endIndex])
-                    let domainMovies = pageMovies.map { self.movieLocalModelToDomain($0) }
                     
-                    promise(.success(domainMovies))
+                    promise(.success(pageMovies))
                 } catch {
                     promise(.failure(error))
                 }
@@ -185,7 +184,7 @@ public final class MovieLocalDataSource {
     
     /// Gets cached genres
     /// - Returns: Publisher emitting cached genres
-    public func getCachedGenres() -> AnyPublisher<[Genre], Error> {
+    public func getCachedGenres() -> AnyPublisher<[LocalGenreModel], Error> {
         
         return Future { [weak self] promise in
             guard let self = self else {
@@ -203,9 +202,62 @@ public final class MovieLocalDataSource {
                     )
                     
                     let allGenres = try self.swiftDataStack.mainContext.fetch(descriptor)
-                    let domainGenres = allGenres.map { self.genreLocalModelToDomain($0) }
 
-                    promise(.success(domainGenres))
+                    promise(.success(allGenres))
+                } catch {
+                    promise(.failure(error))
+                }
+            }
+        }
+        .mapError { error in
+            self.mapSwiftDatakError(error)
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    // MARK: - Movie Cache Operations
+
+    /// Searches cached movies by title with pagination
+    /// - Parameters:
+    ///   - query: The search query string
+    ///   - page: The page number (starting from 1)
+    /// - Returns: Publisher emitting matching movies
+    public func searchMovies(
+        query: String,
+        page: Int
+    ) -> AnyPublisher<[LocalMovieModel], Error> {
+        return Future { [weak self] promise in
+            guard let self = self else {
+                promise(.failure(LocalDataSourceError.operationFailed))
+                return
+            }
+            
+            Task { @MainActor in
+                do {
+                    let pageSize = 20 // Standard TMDB page size
+                    let offset = (page - 1) * pageSize
+                    let expirationDate = Date().addingTimeInterval(-self.moviesCacheDuration)
+                    
+                    let descriptor = FetchDescriptor<LocalMovieModel>(
+                        predicate: #Predicate {
+                            $0.updatededAt >= expirationDate &&
+                            $0.title.localizedStandardContains(query)
+                        },
+                        sortBy: [SortDescriptor(\.createdAt, order: .forward)]
+                    )
+                    
+                    let matchingMovies = try self.swiftDataStack.mainContext.fetch(descriptor)
+                    
+                    let startIndex = min(offset, matchingMovies.count)
+                    let endIndex = min(startIndex + pageSize, matchingMovies.count)
+                    
+                    guard startIndex < matchingMovies.count else {
+                        promise(.success([]))
+                        return
+                    }
+                    
+                    let pageMovies = Array(matchingMovies[startIndex..<endIndex])
+                    promise(.success(pageMovies))
                 } catch {
                     promise(.failure(error))
                 }
@@ -237,29 +289,6 @@ public final class MovieLocalDataSource {
     private func updateLocalGenreModel(_ model: LocalGenreModel, with genre: Genre) {
         model.name = genre.name
         model.updatededAt = Date()
-    }
-    
-    /// Converts local movie model to domain movie
-    /// - Parameter model: Movie model to convert
-    /// - Returns: Domain movie
-    private func movieLocalModelToDomain(_ model: LocalMovieModel) -> Movie {
-        return Movie(
-            id: model.id,
-            title: model.title,
-            overview: model.overview,
-            releaseDate: model.releaseDate,
-            genreIds: model.genreIds
-        )
-    }
-    
-    /// Converts local movie model to domain movie
-    /// - Parameter model: Movie model to convert
-    /// - Returns: Domain movie
-    private func genreLocalModelToDomain(_ model: LocalGenreModel) -> Genre {
-        return Genre(
-            id: model.id,
-            name: model.name
-        )
     }
         
     /// Maps swiftData errors to local data source specific errors

@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension DateFormatter {
+public extension DateFormatter {
     /// ISO8601 date formatter for API responses (yyyy-MM-dd)
     static let apiDateFormatter: DateFormatter = {
         let formatter = DateFormatter()

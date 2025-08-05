@@ -31,8 +31,9 @@ public final class SearchMoviesUseCase {
     /// Executes the search use case
     /// - Parameters:
     ///   - query: Search query text
+    ///   - page: Page number for pagination (starting from 1)
     /// - Returns: Publisher emitting array of movies or error
-    public func execute(query: String) -> AnyPublisher<[Movie], Error> {
+    public func execute(query: String, page: Int) -> AnyPublisher<[Movie], Error> {
         // Validate inputs
         let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         
@@ -41,7 +42,7 @@ public final class SearchMoviesUseCase {
                 .eraseToAnyPublisher()
         }
         
-        return repository.searchMovies(query: trimmedQuery)
+        return repository.searchMovies(query: trimmedQuery, page: page)
     }
     
 }
