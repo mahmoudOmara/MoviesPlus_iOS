@@ -54,7 +54,7 @@ public final class MovieRemoteDataSource {
     /// Maps network errors to data source specific errors
     /// - Parameter error: Original network error
     /// - Returns: Mapped data source error
-    private func mapNetworkError(_ error: Error) -> DataSourceError {
+    private func mapNetworkError(_ error: Error) -> RemoteDataSourceError {
         if let networkError = error as? NetworkError {
             switch networkError {
             case .networkUnavailable, .timeout:
