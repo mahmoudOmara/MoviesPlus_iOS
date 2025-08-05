@@ -26,3 +26,11 @@ public struct Genre: Identifiable {
         self.name = name
     }
 }
+
+// MARK: - Sample Data
+
+public extension Genre {
+    
+    /// Sample genre for previews and testing
+    static let sample = Genre(id: 28, name: "Action")
+}

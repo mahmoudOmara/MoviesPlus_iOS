@@ -17,3 +17,19 @@ public extension DateFormatter {
         return formatter
     }()
 }
+
+public extension Date {
+    /// A private shared formatter for extracting the year component from a `Date`.
+    private static let yearOnlyFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+    
+    /// Formats date to "yyyy" (year only)
+    var yearString: String {
+        return Date.yearOnlyFormatter.string(from: self)
+    }
+}

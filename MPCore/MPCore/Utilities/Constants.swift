@@ -32,6 +32,14 @@ public struct Constants {
         // TMDB API Key - In a real app, this should be stored securely
         public static let apiKey = "4796003271ed53c39e0a9eea94fb558e"
         
+        // Image sizes
+        public struct ImageSizes {
+            public static let poster = "w500"
+            public static let backdrop = "w1280"
+            public static let profile = "w185"
+            public static let original = "original"
+        }
+        
         // API Endpoints
         public struct Endpoints {
             public static let genres = "/genre/movie/list"
