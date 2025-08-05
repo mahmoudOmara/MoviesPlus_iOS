@@ -46,14 +46,18 @@ public final class MovieRepository: MovieRepositoryProtocol {
             .catch { [weak self] error -> AnyPublisher<[Movie], Error> in
                 // Fallback to cached data on network error
                 guard let self = self else {
-                    return Fail(error: error)
+                    return Fail(error: self?.mapDataSourceError(error) ?? .unknown(error))
                         .eraseToAnyPublisher()
                 }
                 return self.localDataSource.getCachedMovies(page: page)
                     .map { response in
                         response.compactMap { self.movieLocalModelToDomain($0) }
                     }
+                    .mapError { self.mapDataSourceError($0) }
                     .eraseToAnyPublisher()
+            }
+            .mapError { [weak self] error in
+                self?.mapDataSourceError(error) ?? .unknown(error)
             }
             .eraseToAnyPublisher()
     }
@@ -74,14 +78,18 @@ public final class MovieRepository: MovieRepositoryProtocol {
             .catch { [weak self] error -> AnyPublisher<[Genre], Error> in
                 // Fallback to cached genres
                 guard let self = self else {
-                    return Fail(error: error)
+                    return Fail(error: self?.mapDataSourceError(error) ?? .unknown(error))
                         .eraseToAnyPublisher()
                 }
                 return self.localDataSource.getCachedGenres()
                     .map { response in
                         response.compactMap { self.genreLocalModelToDomain($0) }
                     }
+                    .mapError { self.mapDataSourceError($0) }
                     .eraseToAnyPublisher()
+            }
+            .mapError { [weak self] error in
+                self?.mapDataSourceError(error) ?? .unknown(error)
             }
             .eraseToAnyPublisher()
     }
@@ -94,6 +102,9 @@ public final class MovieRepository: MovieRepositoryProtocol {
         return localDataSource.searchMovies(query: query, page: page)
             .map { [weak self] response in
                 response.compactMap { self?.movieLocalModelToDomain($0) }
+            }
+            .mapError { [weak self] error in
+                self?.mapDataSourceError(error) ?? .unknown(error)
             }
             .eraseToAnyPublisher()
     }
@@ -179,6 +190,21 @@ public final class MovieRepository: MovieRepositoryProtocol {
             id: model.id,
             name: model.name
         )
+    }
+        
+    /// Maps remote or local data source errors to repository specific errors
+    /// - Parameter error: Original remote or local data source error
+    /// - Returns: Mapped repository error
+    private func mapDataSourceError(_ error: Error) -> RepositoryError {
+        if let remoteDataSourceError = error as? RemoteDataSourceError {
+            return .remote(remoteDataSourceError)
+        }
+        
+        if let localDataSourceError = error as? LocalDataSourceError {
+            return .local(localDataSourceError)
+        }
+        
+        return .unknown(error)
     }
     
     // MARK: - Lifecycle
