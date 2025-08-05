@@ -51,4 +51,16 @@ public struct Constants {
             public static let language = "en-US"
         }
     }
+    
+    // MARK: - Persistence Configuration
+    
+    public struct Persistence {
+
+        // Cache Configuration
+        public struct Cache {
+            public static let imagesCacheDuration: TimeInterval = 7 * 24 * 60 * 60 // 7 days
+            public static let moviesCacheDuration: TimeInterval = 24 * 60 * 60 // 24 hours
+            public static let genresCacheDuration: TimeInterval = 7 * 24 * 60 * 60 // 7 days
+        }
+    }
 }
