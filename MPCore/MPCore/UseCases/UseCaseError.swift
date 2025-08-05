@@ -12,6 +12,7 @@ public enum UseCaseError: LocalizedError {
     case noData
     case networkError
     case cacheError
+    case tooShortSearchQuery(minimumLength: Int)
     
     public var errorDescription: String? {
         switch self {
@@ -23,6 +24,8 @@ public enum UseCaseError: LocalizedError {
             return "Network request failed"
         case .cacheError:
             return "Cache operation failed"
+        case .tooShortSearchQuery(let minimumLength):
+            return "Search query must be at least \(minimumLength) characters long"
         }
     }
 }
