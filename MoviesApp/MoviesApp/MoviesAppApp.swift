@@ -6,12 +6,19 @@
 //
 
 import SwiftUI
+import MPMoviesListing
 
 @main
 struct MoviesAppApp: App {
+    let vm: MovieListViewModel = {
+        let repo = MovieRepository()
+        return MovieListViewModel(repository: repo)
+    }()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MovieListView(viewModel: vm)
+                .themedEnvironment()
         }
     }
 }
