@@ -68,7 +68,7 @@ public struct MovieCellView: View {
             
             VStack(alignment: .leading, spacing: theme.spacing.xSmall) {
                 Text(movie.title)
-                    .font(theme.typography.title)
+                    .font(theme.typography.title3)
                     .foregroundColor(theme.colors.onSurface)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
@@ -170,6 +170,7 @@ public struct MovieCellView: View {
         ZStack {
             if viewMode == .list {
                 Text(movie.overview)
+                    .lineLimit(4)
                     .font(theme.typography.body)
                     .foregroundColor(theme.colors.onSurface)
                     .multilineTextAlignment(.leading)

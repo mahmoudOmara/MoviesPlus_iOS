@@ -154,7 +154,9 @@ public final class MovieRepository: MovieRepositoryProtocol {
             id: model.id,
             title: model.title,
             overview: model.overview,
+            posterPath: model.posterPath,
             releaseDate: model.releaseDate.flatMap { DateFormatter.apiDateFormatter.date(from: $0) },
+            voteAverage: model.voteAverage,
             genreIds: model.genreIds
         )
     }
