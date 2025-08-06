@@ -140,7 +140,10 @@ public struct FilterBottomSheet: View {
         Button(action: { selectedSort = option }) {
             HStack {
                 VStack(alignment: .leading, spacing: theme.spacing.xSmall) {
-                    Text(option.displayName)
+                    HStack {
+                        Image(systemName: option.systemImage)
+                        Text(option.displayName)
+                    }
                         .font(theme.typography.body)
                         .foregroundColor(theme.colors.onBackground)
                     

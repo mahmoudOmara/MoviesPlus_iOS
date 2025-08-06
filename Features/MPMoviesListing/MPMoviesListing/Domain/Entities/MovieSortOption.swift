@@ -22,7 +22,7 @@ public enum MovieSortOption: String, CaseIterable {
         case .releaseDate:
             return "calendar"
         case .title:
-            return "textformat.abc"
+            return "textformat.characters.dottedunderline"
         }
     }
 }
