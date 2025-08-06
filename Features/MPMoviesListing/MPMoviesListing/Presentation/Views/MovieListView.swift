@@ -284,7 +284,7 @@ public struct MovieListView: View {
                 Image(systemName: "line.horizontal.3.decrease.circle")
                     .foregroundColor(theme.colors.accent)
                 
-                if viewModel.isSortAndGenrefilterActive() {
+                if viewModel.isFilteringOrSorting {
                     Circle()
                         .fill(theme.colors.highlight)
                         .frame(width: 8, height: 8)

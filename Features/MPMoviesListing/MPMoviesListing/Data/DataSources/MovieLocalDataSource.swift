@@ -296,32 +296,17 @@ public final class MovieLocalDataSource {
                     let offset = (page - 1) * pageSize
                     let expirationDate = Date().addingTimeInterval(-self.moviesCacheDuration)
                     
-                    let descriptor: FetchDescriptor<LocalMovieModel>
-                    
-                    // Apply genre filter if genre IDs are provided
-                    if genreIds.isEmpty {
-                        descriptor = FetchDescriptor<LocalMovieModel>(
-                            predicate: #Predicate { $0.updatededAt >= expirationDate },
-                            sortBy: [SortDescriptor(\.createdAt, order: .forward)]
-                        )
-                    } else {
-                        descriptor = FetchDescriptor<LocalMovieModel>(
-                            predicate: #Predicate { movie in
-                                movie.updatededAt >= expirationDate &&
-                                genreIds.allSatisfy { genreId in
-                                    movie.genreIds.contains(genreId)
-                                }
-                            },
-                            sortBy: [SortDescriptor(\.createdAt, order: .forward)]
-                        )
-                    }
+                    let descriptor = FetchDescriptor<LocalMovieModel>(
+                        predicate: #Predicate { $0.updatededAt >= expirationDate },
+                        sortBy: [SortDescriptor(\.createdAt, order: .forward)]
+                    )
                     
                     let allMovies = try self.swiftDataStack.mainContext.fetch(descriptor)
                     
-                    // Sort movies based on the sort option
-                    let sortedMovies = self.sortMovies(allMovies, by: sortOption)
+                    let filteredMovies = self.filterMovies(allMovies, by: genreIds)
                     
-                    // Apply pagination
+                    let sortedMovies = self.sortMovies(filteredMovies, by: sortOption)
+                    
                     let startIndex = min(offset, sortedMovies.count)
                     let endIndex = min(startIndex + pageSize, sortedMovies.count)
                     
@@ -344,6 +329,20 @@ public final class MovieLocalDataSource {
     }
     
     // MARK: - Private Helpers
+    
+    /// Filter an array of movies using the specified genre ids
+    /// - Parameters:
+    ///   - movies: Array of movies to sort
+    ///   - genreIds: Array of genre IDs to filter by (empty array means no genre filter)
+    /// - Returns: Sorted array of movies
+    private func filterMovies(_ movies: [LocalMovieModel], by genreIds: [Int]) -> [LocalMovieModel] {
+        guard !genreIds.isEmpty else { return movies }
+        return movies.filter { movie in
+            return genreIds.allSatisfy { genreId in
+                movie.genreIds.contains(genreId)
+            }
+        }
+    }
     
     /// Sorts an array of movies based on the specified sort option
     /// - Parameters:

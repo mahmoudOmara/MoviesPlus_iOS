@@ -48,12 +48,16 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
     /// Current sort option
     @Published public var sortOption: MovieSortOption = .popularity
     
+    /// Whether filter/sort is currently active (not using default settings)
+    @Published public var isFilteringOrSorting: Bool = false
+    
     // MARK: - Dependencies
     
     private let repository: MovieRepositoryProtocol
     private let getGenresUseCase: GetGenresUseCase
     private let getMoviesUseCase: GetMoviesUseCase
     private let searchMoviesUseCase: SearchMoviesUseCase
+    private let filterAndSortMoviesUseCase: FilterAndSortMoviesUseCase
     
     // MARK: - Private State
     
@@ -69,6 +73,7 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
         self.getGenresUseCase = GetGenresUseCase(repository: repository)
         self.getMoviesUseCase = GetMoviesUseCase(repository: repository)
         self.searchMoviesUseCase = SearchMoviesUseCase(repository: repository)
+        self.filterAndSortMoviesUseCase = FilterAndSortMoviesUseCase(repository: repository)
         
         super.init()
         
@@ -107,12 +112,14 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
     public func refresh() {
         if isSearching {
             startSearch()
+        } else if isFilteringOrSorting {
+            applyFilterAndSort(refresh: true)
         } else {
             loadInitialData()
         }
     }
     
-    /// Loads more movies for pagination (works for both normal and search modes)
+    /// Loads more movies for pagination (works for normal, search, and filter/sort modes)
     public func loadMore() {
         guard canLoadMore && !isLoadingMore && !isLoading else { return }
         
@@ -120,26 +127,26 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
         
         if isSearching && !searchText.isEmpty {
             performSearch(refresh: false)
+        } else if isFilteringOrSorting {
+            applyFilterAndSort(refresh: false)
         } else {
             loadMoreMovies()
         }
     }
     
     // MARK: - Public Methods - UI Actions
-    
-    public func isSortAndGenrefilterActive() -> Bool {
-        return sortOption != MoviesListingConstants.defaultMoviesSortOption || genreFilter.isActive
-    }
 
     public func applySortAndGenreFilter(sortOption: MovieSortOption, filter: GenreFilter) {
         self.sortOption = sortOption
         self.genreFilter = filter
+        self.isFilteringOrSorting = isSortAndGenrefilterActive()
         
         guard isSortAndGenrefilterActive() else {
-            // TODO: - reset to normal list
+            refresh()
             return
         }
-        // TODO: - apply sort and filter
+        
+        applyFilterAndSort(refresh: true)
     }
     
     /// Toggles view mode between grid and list
@@ -172,7 +179,10 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
         searchText = ""
         currentPage = 1
         canLoadMore = true
-        refresh()
+        
+//        // Check if we should apply filters/sort or return to default list
+//        isFilteringOrSorting = isSortAndGenrefilterActive()
+//        refresh()
     }
     
     /// Performs a search with the given query
@@ -242,6 +252,44 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
             .store(in: &cancellables)
     }
     
+    /// Applies filtering and sorting operation
+    /// - Parameter refresh: Whether this is a new filter/sort (true) or pagination (false)
+    private func applyFilterAndSort(refresh: Bool) {
+        let page = refresh ? 1 : currentPage
+        let genreIds = genreFilter.isActive ? Array(genreFilter.selectedGenreIds) : []
+
+        if refresh {
+            setLoading()
+            currentPage = 1
+            canLoadMore = true
+        } else {
+            setLoadingMore()
+        }
+        
+        filterAndSortMoviesUseCase.execute(genreIds: genreIds, sortOption: sortOption, page: page)
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion {
+                        self?.setFailure(error)
+                    }
+                },
+                receiveValue: { [weak self] filteredMovies in
+                    guard let self = self else { return }
+                    
+                    if refresh {
+                        self.movies = filteredMovies
+                    } else {
+                        self.movies.append(contentsOf: filteredMovies)
+                    }
+                    
+                    self.setSuccess((self.movies, self.genres))
+                    self.canLoadMore = filteredMovies.count >= Self.itemsPerPage
+                }
+            )
+            .store(in: &cancellables)
+    }
+    
     // MARK: - Private Methods - Setup & Binding
 
     /// Sets up reactive search with debouncing
@@ -264,9 +312,7 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
     public func getGenres(for genreIds: [Int]) -> [Genre] {
         return genres.filter { genreIds.contains($0.id) }
     }
-    
-    // MARK: - Private Methods - Utilities
-    
+        
     /// Adds query to recent searches with deduplication and limit
     /// - Parameter query: Search query to add
     private func addToRecentSearches(_ query: String) {
@@ -283,5 +329,11 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
         if recentSearches.count > 10 {
             recentSearches = Array(recentSearches.prefix(10))
         }
+    }
+    
+    // MARK: - Private Methods - Helpers
+    
+    private func isSortAndGenrefilterActive() -> Bool {
+        return sortOption != MoviesListingConstants.defaultMoviesSortOption || genreFilter.isActive
     }
 }
