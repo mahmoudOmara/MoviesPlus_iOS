@@ -18,5 +18,5 @@ public protocol MovieDetailsRepositoryProtocol {
     /// Fetches detailed information for a specific movie
     /// - Parameter movieId: The movie ID to fetch details for
     /// - Returns: Publisher emitting movie details or error
-    func getMovieDetails(movieId: Int) -> AnyPublisher<MovieDetails, Error>
+    func getMovieDetails(movieId: Int) -> AnyPublisher<MovieDetails?, Error>
 }
