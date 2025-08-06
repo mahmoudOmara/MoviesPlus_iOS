@@ -109,6 +109,23 @@ public final class MovieRepository: MovieRepositoryProtocol {
             .eraseToAnyPublisher()
     }
     
+    /// Filters cached movies by genre IDs and sorts them according to the specified option
+    /// - Parameters:
+    ///   - genreIds: Array of genre IDs to filter by (empty array means no genre filter)
+    ///   - sortOption: The sort option to apply
+    ///   - page: Page number for pagination (starting from 1)
+    /// - Returns: Publisher emitting filtered and sorted movies
+    public func filterAndSortMovies(genreIds: [Int], sortOption: MovieSortOption, page: Int) -> AnyPublisher<[Movie], Error> {
+        return localDataSource.filterAndSortMovies(genreIds: genreIds, sortOption: sortOption, page: page)
+            .map { [weak self] response in
+                response.compactMap { self?.movieLocalModelToDomain($0) }
+            }
+            .mapError { [weak self] error in
+                self?.mapDataSourceError(error) ?? .unknown(error)
+            }
+            .eraseToAnyPublisher()
+    }
+    
     // MARK: - Private Helpers
     
     /// Caches movies in background

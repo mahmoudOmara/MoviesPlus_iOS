@@ -31,4 +31,12 @@ public protocol MovieRepositoryProtocol {
     ///   - query: Search query text
     /// - Returns: Publisher emitting array of movies or error
     func searchMovies(query: String, page: Int) -> AnyPublisher<[Movie], Error>
+    
+    /// Filters cached movies by genre IDs and sorts them according to the specified option
+    /// - Parameters:
+    ///   - genreIds: Array of genre IDs to filter by (empty array means no genre filter)
+    ///   - sortOption: The sort option to apply
+    ///   - page: Page number for pagination (starting from 1)
+    /// - Returns: Publisher emitting filtered and sorted movies
+    func filterAndSortMovies(genreIds: [Int], sortOption: MovieSortOption, page: Int) -> AnyPublisher<[Movie], Error>
 }
