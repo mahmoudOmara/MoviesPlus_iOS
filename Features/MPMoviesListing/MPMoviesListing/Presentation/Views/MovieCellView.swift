@@ -72,6 +72,7 @@ public struct MovieCellView: View {
                     .foregroundColor(theme.colors.onSurface)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
+                    .frame(height: 60)
                 
                 if let releaseYear = movie.releaseYear {
                     Text(releaseYear)

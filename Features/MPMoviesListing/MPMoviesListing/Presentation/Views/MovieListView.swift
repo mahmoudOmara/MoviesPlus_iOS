@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import MPCore
 
 /// Main movie list view with grid/list toggle and search functionality
 public struct MovieListView: View {
@@ -381,9 +382,10 @@ private struct SecondaryButtonStyle: ButtonStyle {
 
 #if DEBUG
 struct MovieListView_Previews: PreviewProvider {
+    
+    static let viewModel = MovieListViewModel(repository: MovieRepository(localDataSource: MovieLocalDataSource(swiftDataStack: try! .forTesting())))
+
     static var previews: some View {
-        let repository = MovieRepository()
-        let viewModel = MovieListViewModel(repository: repository)
         
         MovieListView(viewModel: viewModel)
             .preferredColorScheme(.light)
