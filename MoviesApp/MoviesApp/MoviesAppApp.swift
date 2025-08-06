@@ -6,14 +6,24 @@
 //
 
 import SwiftUI
+import MPCore
 import MPMoviesListing
 
 @main
 struct MoviesAppApp: App {
-    let vm: MovieListViewModel = {
+    let vm: MovieListViewModel
+    
+    init() {
+        do {
+            try SwiftDataStack.configureShared(with: [LocalMovieModel.self])
+        } catch {
+            fatalError("Failed to configure SwiftDataStack: \(error)")
+        }
+        
         let repo = MovieRepository()
-        return MovieListViewModel(repository: repo)
-    }()
+        vm = MovieListViewModel(repository: repo)
+
+    }
     
     var body: some Scene {
         WindowGroup {

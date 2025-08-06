@@ -32,10 +32,11 @@ public final class SwiftDataStack: ObservableObject {
     // MARK: - Initialization
     
     /// Initializes the SwiftData stack with the app's model configuration
-    /// - Parameter isStoredInMemoryOnly: Whether to store data in memory only (useful for testing)
-    public init(isStoredInMemoryOnly: Bool = false) throws {
-        let schema = Schema([
-        ])
+    /// - Parameters:
+    ///   - modelTypes: Array of PersistentModel types to include in the schema
+    ///   - isStoredInMemoryOnly: Whether to store data in memory only (useful for testing)
+    public init(modelTypes: [any PersistentModel.Type] = [], isStoredInMemoryOnly: Bool = false) throws {
+        let schema = Schema(modelTypes)
         
         let modelConfiguration = ModelConfiguration(
             schema: schema,
@@ -145,18 +146,27 @@ public final class SwiftDataStack: ObservableObject {
 public extension SwiftDataStack {
     
     /// Shared instance of SwiftDataStack
-    /// Note: This should be initialized early in the app lifecycle
-    static var shared: SwiftDataStack = {
+    /// > Important: You must call `SwiftDataStack.configureShared(with:)` early in the app lifecycle
+    /// (e.g., in your `App` struct or the `SceneDelegate`) before accessing this property.
+    /// - Note: If you attempt to access this property before calling `configure(with:)`,
+    /// it will be `nil`, which may result in a crash or unexpected behavior.
+    static var shared: SwiftDataStack!
+    
+    /// Configures the shared SwiftDataStack instance with model types
+    /// - Parameter modelTypes: Array of PersistentModel types to include in the schema
+    /// - Throws: SwiftDataError if initialization fails
+    static func configureShared(with modelTypes: [any PersistentModel.Type]) throws {
         do {
-            return try SwiftDataStack()
+            shared = try SwiftDataStack(modelTypes: modelTypes)
         } catch {
-            fatalError("Failed to initialize SwiftDataStack: \(error)")
+            throw SwiftDataError.containerInitializationFailed(error)
         }
-    }()
+    }
     
     /// Creates a new instance for testing
+    /// - Parameter modelTypes: Array of PersistentModel types to include in the schema
     /// - Returns: SwiftDataStack configured for in-memory storage
-    static func forTesting() throws -> SwiftDataStack {
-        return try SwiftDataStack(isStoredInMemoryOnly: true)
+    static func forTesting(with modelTypes: [any PersistentModel.Type] = []) throws -> SwiftDataStack {
+        return try SwiftDataStack(modelTypes: modelTypes, isStoredInMemoryOnly: true)
     }
 }
