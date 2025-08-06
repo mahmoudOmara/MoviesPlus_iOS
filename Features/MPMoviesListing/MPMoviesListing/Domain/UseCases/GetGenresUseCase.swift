@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import MPCore
 
 /// Use case for getting movie genres
 /// Manages genre data access and provides filtering capabilities

@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import MPCore
 
 /// Repository protocol defining data access contracts for the MovieList feature
 /// This protocol abstracts the data layer and provides a clean interface for use cases
