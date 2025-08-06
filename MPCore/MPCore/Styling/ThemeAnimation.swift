@@ -10,4 +10,5 @@ import SwiftUI
 /// Animation configuration for consistent motion design
 public struct ThemeAnimation {
     public let standard = Animation.easeInOut(duration: 0.3)
+    public let quick = SwiftUI.Animation.easeInOut(duration: 0.2)
 }

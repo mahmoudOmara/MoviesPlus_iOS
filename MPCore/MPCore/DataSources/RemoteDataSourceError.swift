@@ -1,5 +1,5 @@
 //
-//  DataSourceError.swift
+//  RemoteDataSourceError.swift
 //  MPCore
 //
 //  Created by mac on 04/08/2025.
@@ -8,7 +8,7 @@
 import Foundation
 
 /// Specific errors that can occur in the remote data source
-public enum DataSourceError: LocalizedError {
+public enum RemoteDataSourceError: LocalizedError {
     case networkUnavailable
     case unauthorized
     case dataNotFound

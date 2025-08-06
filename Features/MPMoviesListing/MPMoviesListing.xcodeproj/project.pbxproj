@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		041CC0032E413CDE0098E251 /* MPMoviesListing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 041CBFF92E413CDE0098E251 /* MPMoviesListing.framework */; };
-		041CC0762E413E170098E251 /* MPCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 041CC0752E413E170098E251 /* MPCore.framework */; };
+		041CC1082E4175960098E251 /* MPCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 041CC1072E4175960098E251 /* MPCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,7 +24,7 @@
 /* Begin PBXFileReference section */
 		041CBFF92E413CDE0098E251 /* MPMoviesListing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MPMoviesListing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		041CC0022E413CDE0098E251 /* MPMoviesListingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MPMoviesListingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		041CC0752E413E170098E251 /* MPCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MPCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		041CC1072E4175960098E251 /* MPCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MPCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -45,7 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				041CC0762E413E170098E251 /* MPCore.framework in Frameworks */,
+				041CC1082E4175960098E251 /* MPCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +82,7 @@
 		041CC0742E413E170098E251 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				041CC0752E413E170098E251 /* MPCore.framework */,
+				041CC1072E4175960098E251 /* MPCore.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -357,7 +357,7 @@
 		041CC00C2E413CDE0098E251 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3CTEDJ84N8;
@@ -390,7 +390,7 @@
 		041CC00D2E413CDE0098E251 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3CTEDJ84N8;

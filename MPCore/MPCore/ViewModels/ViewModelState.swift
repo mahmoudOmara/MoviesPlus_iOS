@@ -13,6 +13,7 @@ import Foundation
 public enum ViewModelState<T> {
     case idle
     case loading
+    case loadingMore
     case success(T)
     case failure(Error)
 }
@@ -31,6 +32,14 @@ public extension ViewModelState {
     /// Returns true if the state is loading
     var isLoading: Bool {
         if case .loading = self {
+            return true
+        }
+        return false
+    }
+    
+    /// Returns true if the state is loadingMore
+    var isLoadingMore: Bool {
+        if case .loadingMore = self {
             return true
         }
         return false
@@ -79,7 +88,7 @@ public extension ViewModelState {
 extension ViewModelState: Equatable where T: Equatable {
     public static func == (lhs: ViewModelState<T>, rhs: ViewModelState<T>) -> Bool {
         switch (lhs, rhs) {
-        case (.idle, .idle), (.loading, .loading):
+        case (.idle, .idle), (.loading, .loading), (.loadingMore, .loadingMore):
             return true
         case (.success(let lhsValue), .success(let rhsValue)):
             return lhsValue == rhsValue

@@ -11,6 +11,8 @@
 		041CC0812E413E340098E251 /* MPMoviesListing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 041CC07F2E413E340098E251 /* MPMoviesListing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		041CC0842E413E380098E251 /* MPMovieDetails.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 041CC0832E413E380098E251 /* MPMovieDetails.framework */; };
 		041CC0852E413E380098E251 /* MPMovieDetails.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 041CC0832E413E380098E251 /* MPMovieDetails.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		041CC0BA2E4175380098E251 /* MPCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 041CC0B92E4175380098E251 /* MPCore.framework */; };
+		041CC0BB2E4175380098E251 /* MPCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 041CC0B92E4175380098E251 /* MPCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +40,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				041CC0812E413E340098E251 /* MPMoviesListing.framework in Embed Frameworks */,
+				041CC0BB2E4175380098E251 /* MPCore.framework in Embed Frameworks */,
 				041CC0852E413E380098E251 /* MPMovieDetails.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -51,6 +54,7 @@
 		041CC05B2E413D4A0098E251 /* MoviesAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoviesAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		041CC07F2E413E340098E251 /* MPMoviesListing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MPMoviesListing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		041CC0832E413E380098E251 /* MPMovieDetails.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MPMovieDetails.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		041CC0B92E4175380098E251 /* MPCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MPCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -77,6 +81,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				041CC0802E413E340098E251 /* MPMoviesListing.framework in Frameworks */,
+				041CC0BA2E4175380098E251 /* MPCore.framework in Frameworks */,
 				041CC0842E413E380098E251 /* MPMovieDetails.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -122,6 +127,7 @@
 		041CC07E2E413E340098E251 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				041CC0B92E4175380098E251 /* MPCore.framework */,
 				041CC0832E413E380098E251 /* MPMovieDetails.framework */,
 				041CC07F2E413E340098E251 /* MPMoviesListing.framework */,
 			);

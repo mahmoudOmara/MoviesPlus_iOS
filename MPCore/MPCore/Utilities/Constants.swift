@@ -22,4 +22,53 @@ public struct Constants {
         }()
         public static let enableLogging = isDebugMode
     }
+    
+    // MARK: - TMDB API Configuration
+    
+    public struct TMDB {
+        public static let baseURL = "https://api.themoviedb.org/3"
+        public static let imageBaseURL = "https://image.tmdb.org/t/p"
+        
+        // TMDB API Key - In a real app, this should be stored securely
+        public static let apiKey = "4796003271ed53c39e0a9eea94fb558e"
+        
+        // Image sizes
+        public struct ImageSizes {
+            public static let poster = "w500"
+            public static let backdrop = "w1280"
+            public static let profile = "w185"
+            public static let original = "original"
+        }
+        
+        // API Endpoints
+        public struct Endpoints {
+            public static let genres = "/genre/movie/list"
+            public static let trendingMovies = "/discover/movie"
+            public static let movieDetails = "/movie"
+        }
+        
+        // Query Parameters
+        public struct QueryParams {
+            public static let apiKey = "api_key"
+            public static let language = "language"
+            public static let page = "page"
+        }
+        
+        // Default Values
+        public struct Defaults {
+            public static let language = "en-US"
+        }
+    }
+    
+    // MARK: - Persistence Configuration
+    
+    public struct Persistence {
+
+        // Cache Configuration
+        public struct Cache {
+            public static let imagesCacheDuration: TimeInterval = 7 * 24 * 60 * 60 // 7 days
+            public static let moviesCacheDuration: TimeInterval = 24 * 60 * 60 // 24 hours
+            public static let genresCacheDuration: TimeInterval = 7 * 24 * 60 * 60 // 7 days
+        }
+    }
 }
