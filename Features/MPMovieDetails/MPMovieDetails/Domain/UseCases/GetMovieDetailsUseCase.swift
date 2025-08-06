@@ -38,5 +38,12 @@ public final class GetMovieDetailsUseCase {
         }
         
         return repository.getMovieDetails(movieId: movieId)
+            .tryMap { movie in
+                guard let movie else {
+                    throw UseCaseError.noData
+                }
+                return movie
+            }
+            .eraseToAnyPublisher()
     }
 }
