@@ -35,6 +35,11 @@ public struct ThemeColors {
     
     // MARK: - Text Colors
 
+    /// Main text on accent
+    public var onAccent: Color {
+        Color(UIColor.white)
+    }
+    
     /// Main text on background
     public var onBackground: Color {
         Color(UIColor.label)
@@ -46,6 +51,11 @@ public struct ThemeColors {
     }
 
     // MARK: - States
+    
+    /// Highlight color
+    public var highlight: Color {
+        Color.red
+    }
 
     /// Error color
     public var error: Color {

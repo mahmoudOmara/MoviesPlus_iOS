@@ -40,6 +40,14 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
     /// Recent search queries
     @Published public var recentSearches: [String] = []
     
+    // MARK: - Published Properties - Filter and Sort State
+
+    /// Current genre filter
+    @Published public var genreFilter: GenreFilter = GenreFilter()
+    
+    /// Current sort option
+    @Published public var sortOption: MovieSortOption = .popularity
+    
     // MARK: - Dependencies
     
     private let repository: MovieRepositoryProtocol
@@ -118,7 +126,22 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
     }
     
     // MARK: - Public Methods - UI Actions
+    
+    public func isSortAndGenrefilterActive() -> Bool {
+        return sortOption != MoviesListingConstants.defaultMoviesSortOption || genreFilter.isActive
+    }
 
+    public func applySortAndGenreFilter(sortOption: MovieSortOption, filter: GenreFilter) {
+        self.sortOption = sortOption
+        self.genreFilter = filter
+        
+        guard isSortAndGenrefilterActive() else {
+            // TODO: - reset to normal list
+            return
+        }
+        // TODO: - apply sort and filter
+    }
+    
     /// Toggles view mode between grid and list
     public func toggleViewMode() {
         viewMode = viewMode == .grid ? .list : .grid

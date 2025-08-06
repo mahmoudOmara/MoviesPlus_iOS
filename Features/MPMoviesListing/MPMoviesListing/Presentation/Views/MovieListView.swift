@@ -16,7 +16,8 @@ public struct MovieListView: View {
     
     @ObservedObject private var viewModel: MovieListViewModel
     @State private var showingSearch = false
-    
+    @State private var showingFilters = false
+
     @Environment(\.theme) private var theme
 
     // MARK: - Grid Configuration
@@ -43,6 +44,10 @@ public struct MovieListView: View {
             .navigationTitle("Movies")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    filterButton
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack {
                         viewModeToggle
@@ -64,6 +69,15 @@ public struct MovieListView: View {
             
             .refreshable {
                 await refreshData()
+            }
+            .sheet(isPresented: $showingFilters) {
+                FilterBottomSheet(
+                    genres: viewModel.genres,
+                    currentFilter: viewModel.genreFilter,
+                    sortOption: viewModel.sortOption,
+                ) { filter, sort in
+                    viewModel.applySortAndGenreFilter(sortOption: sort, filter: filter)
+                }
             }
             .onAppear {
                 if viewModel.movies.isEmpty {
@@ -263,6 +277,22 @@ public struct MovieListView: View {
     }
     
     // MARK: - Toolbar Items
+    
+    private var filterButton: some View {
+        Button(action: { showingFilters = true }) {
+            ZStack {
+                Image(systemName: "line.horizontal.3.decrease.circle")
+                    .foregroundColor(theme.colors.accent)
+                
+                if viewModel.isSortAndGenrefilterActive() {
+                    Circle()
+                        .fill(theme.colors.highlight)
+                        .frame(width: 8, height: 8)
+                        .offset(x: 8, y: -8)
+                }
+            }
+        }
+    }
     
     private var searchButton: some View {
         Button(action: { showingSearch.toggle() }) {
