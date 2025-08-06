@@ -22,21 +22,21 @@ public final class MovieDetailsViewModel: BaseViewModel<MovieDetails> {
     /// Show full overview text
     @Published public var showFullOverview: Bool = false
     
-    // MARK: - Private Properties
+    // MARK: - Dependencies
     
     private let movieId: Int
-    
-    /// Use cases
+    private let repository: MovieDetailsRepositoryProtocol
     private let getMovieDetailsUseCase: GetMovieDetailsUseCase
     
     // MARK: - Initialization
     
     public init(
         movieId: Int,
-        getMovieDetailsUseCase: GetMovieDetailsUseCase
+        repository: MovieDetailsRepositoryProtocol
     ) {
         self.movieId = movieId
-        self.getMovieDetailsUseCase = getMovieDetailsUseCase
+        self.repository = repository
+        self.getMovieDetailsUseCase = GetMovieDetailsUseCase(repository: repository)
         super.init()
     }
     
@@ -70,6 +70,15 @@ public final class MovieDetailsViewModel: BaseViewModel<MovieDetails> {
     /// Refreshes all data
     public func refresh() {
         loadInitialData()
+    }
+    
+    public func shareMovie() {
+        
+    }
+    
+    /// Retries failed operations
+    public func retry() {
+        loadMovieDetails()
     }
     
     // MARK: - Tab Management

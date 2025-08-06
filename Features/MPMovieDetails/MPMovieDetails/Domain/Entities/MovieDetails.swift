@@ -95,6 +95,10 @@ public extension MovieDetails {
         return releaseDate?.yearString
     }
     
+    var mediumReleaseDate: String? {
+        return releaseDate?.mediumStrig
+    }
+    
     /// Formatted runtime (e.g., "2h 30m")
     var formattedRuntime: String? {
         guard let runtime = runtime, runtime > 0 else { return nil }

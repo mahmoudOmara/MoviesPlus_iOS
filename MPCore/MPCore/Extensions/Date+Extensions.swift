@@ -28,8 +28,20 @@ public extension Date {
         return formatter
     }()
     
+    /// A private shared medium style date formatter
+    private static let mediumDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter
+    }()
+    
     /// Formats date to "yyyy" (year only)
     var yearString: String {
-        return Date.yearOnlyFormatter.string(from: self)
+        return Self.yearOnlyFormatter.string(from: self)
+    }
+    
+    /// Formats date to medium formate
+    var mediumStrig: String {
+        return Self.mediumDateFormatter.string(from: self)
     }
 }
