@@ -25,9 +25,15 @@ public final class LocalMovieModel {
     /// Movie overview/description
     public var overview: String
     
+    /// Poster image path (relative to TMDB base URL)
+    public var posterPath: String?
+
     /// Release date
     public var releaseDate: Date?
     
+    /// Vote average rating (0.0 - 10.0)
+    public var voteAverage: Double
+
     /// Associated genre IDs
     public var genreIds: [Int]
     
@@ -44,14 +50,18 @@ public final class LocalMovieModel {
     public init(
         id: Int,
         title: String,
-        overview: String = "",
-        releaseDate: Date? = nil,
+        overview: String,
+        posterPath: String?,
+        releaseDate: Date?,
+        voteAverage: Double,
         genreIds: [Int]
     ) {
         self.id = id
         self.title = title
         self.overview = overview
+        self.posterPath = posterPath
         self.releaseDate = releaseDate
+        self.voteAverage = voteAverage
         self.genreIds = genreIds
         self.createdAt = Date()
         self.updatededAt = Date()
