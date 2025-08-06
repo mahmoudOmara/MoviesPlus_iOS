@@ -57,7 +57,7 @@ public struct MovieListView: View {
                 prompt: "Search movies..."
             )
             .searchSuggestions {
-                if showingSearch && !viewModel.recentSearches.isEmpty {
+                if showingSearch && !viewModel.recentSearches.isEmpty && viewModel.searchText.isEmpty {
                     recentSearchSuggestions
                 }
             }
@@ -318,7 +318,6 @@ public struct MovieListView: View {
             .contentShape(Rectangle())
             .onTapGesture {
                 viewModel.performSearch(with: query)
-                showingSearch = false
             }
         }
     }
