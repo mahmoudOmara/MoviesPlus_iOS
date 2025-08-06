@@ -233,6 +233,15 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
             .store(in: &cancellables)
     }
     
+    // MARK: - Public Methods - Utilities
+    
+    /// Retrieves genres from genre IDs
+    /// - Parameter genreIds: Array of genre IDs to look up
+    /// - Returns: Array of Genre objects matching the provided IDs
+    public func getGenres(for genreIds: [Int]) -> [Genre] {
+        return genres.filter { genreIds.contains($0.id) }
+    }
+    
     // MARK: - Private Methods - Utilities
     
     /// Adds query to recent searches with deduplication and limit

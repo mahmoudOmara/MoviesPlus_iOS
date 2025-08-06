@@ -129,7 +129,7 @@ public struct MovieListView: View {
                 ForEach(viewModel.movies, id: \.id) { movie in
                     MovieCellView(
                         movie: movie,
-                        genres: [],
+                        genres: viewModel.getGenres(for: movie.genreIds),
                         viewMode: .grid,
                         onTap: {
                             
@@ -148,7 +148,7 @@ public struct MovieListView: View {
                 ForEach(viewModel.movies, id: \.id) { movie in
                     MovieCellView(
                         movie: movie,
-                        genres: [],
+                        genres: viewModel.getGenres(for: movie.genreIds),
                         viewMode: .list,
                         onTap: {
                             
