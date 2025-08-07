@@ -570,7 +570,14 @@ extension MovieDetailsSection {
 #if DEBUG
 struct MovieDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = MovieDetailsViewModel(movieId: 550, repository: MovieDetailsRepository(localDataSource: MovieDetailsLocalDataSource(swiftDataStack: try! .forTesting())))
+        let viewModel = MovieDetailsViewModel(
+            movieId: 550,
+            repository: MovieDetailsRepository(
+                remoteDataSource: MovieDetailsRemoteDataSource(networkManager: NetworkManager.shared),
+                localDataSource: MovieDetailsLocalDataSource(swiftDataStack: try! .forTesting())
+            ),
+            sharingService: SharingService()
+        )
         
         MovieDetailsView(viewModel: viewModel)
             .preferredColorScheme(.light)

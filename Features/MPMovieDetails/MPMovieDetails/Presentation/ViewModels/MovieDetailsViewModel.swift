@@ -27,17 +27,19 @@ public final class MovieDetailsViewModel: BaseViewModel<MovieDetails> {
     private let movieId: Int
     private let repository: MovieDetailsRepositoryProtocol
     private let getMovieDetailsUseCase: GetMovieDetailsUseCase
-    
+    private let sharingService: SharingServiceProtocol
+
     // MARK: - Initialization
     
     public init(
         movieId: Int,
-        repository: MovieDetailsRepositoryProtocol
+        repository: MovieDetailsRepositoryProtocol,
+        sharingService: SharingServiceProtocol
     ) {
         self.movieId = movieId
         self.repository = repository
         self.getMovieDetailsUseCase = GetMovieDetailsUseCase(repository: repository)
-        super.init()
+        self.sharingService = sharingService
     }
     
     // MARK: - Data Loading Methods
@@ -72,6 +74,7 @@ public final class MovieDetailsViewModel: BaseViewModel<MovieDetails> {
         loadInitialData()
     }
     
+    /// Shares the current movie using the sharing service
     public func shareMovie() {
         
     }
