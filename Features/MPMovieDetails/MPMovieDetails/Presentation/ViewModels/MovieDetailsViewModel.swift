@@ -71,6 +71,12 @@ public final class MovieDetailsViewModel: BaseViewModel<MovieDetails, MovieDetai
     
     // MARK: - User Actions
     
+    /// Navigates back to the previous screen
+    @MainActor
+    public func navigateBack() {
+        coordinator?.navigate(to: .back)
+    }
+    
     /// Refreshes all data
     public func refresh() {
         loadInitialData()

@@ -23,7 +23,7 @@ public final class AppCoordinator: Coordinator, ObservableObject {
     
     // MARK: - Coordinator Properties
     
-    public var parentCoordinator: (any Coordinator)?
+    public weak var parentCoordinator: (any Coordinator)?
 
     @Published public var path = NavigationPath()
     
@@ -39,7 +39,7 @@ public final class AppCoordinator: Coordinator, ObservableObject {
     // MARK: - Coordinator Methods
     
     public func start() -> AnyView {
-        return destination(for: .movieListing) ?? AnyView(EmptyView())
+        return AnyView(createMovieListView())
     }
     
     public func navigate(to destination: AppNavigationDestination) {
@@ -54,26 +54,38 @@ public final class AppCoordinator: Coordinator, ObservableObject {
     public func destination(for destination: AppNavigationDestination) -> AnyView? {
         switch destination {
         case .movieListing:
-            movieListingCoordinator = MovieListingCoordinator(delegate: self)
-//            movieListingCoordinator?.parentCoordinator = self
-            return AnyView(movieListingCoordinator!.start())
+            return nil // should never happens
             
         case .movieDetails(let movieId):
-            movieDetailsCoordinator = MovieDetailsCoordinator(movieId: movieId, delegate: self)
-//            movieDetailsCoordinator?.parentCoordinator = self
-            return AnyView(movieDetailsCoordinator!.start())
+            movieDetailsCoordinator = MovieDetailsCoordinator(movieId: movieId)
+            movieDetailsCoordinator?.parentCoordinator = self
+            return AnyView(createMovieDetailsView(movieId: movieId))
 
         }
     }
-}
+    
+    // MARK: - Private Helpers
 
-extension AppCoordinator: MovieListingCoordinatorDelegate {
-    public func navigateToMovieDetails(movieId: Int) {
-        self.navigate(to: .movieDetails(movieId: movieId))
+    private func createMovieListView() -> some View {
+        movieListingCoordinator = MovieListingCoordinator()
+        movieListingCoordinator?.parentCoordinator = self
+        return movieListingCoordinator!.start()
+    }
+    
+    private func createMovieDetailsView(movieId: Int) -> some View {
+        movieDetailsCoordinator = MovieDetailsCoordinator(movieId: movieId)
+        movieDetailsCoordinator?.parentCoordinator = self
+        return movieDetailsCoordinator!.start()
     }
 }
 
-extension AppCoordinator: MovieDetailsCoordinatorDelegate {
+// MARK: - InterModuleCoordinator
+
+extension AppCoordinator: InterModuleCoordinator {
+    public func navigateToMovieDetails(movieId: Int) {
+        self.navigate(to: .movieDetails(movieId: movieId))
+    }
+    
     public func navigateBack() {
         self.navigate(to: .movieListing)
     }

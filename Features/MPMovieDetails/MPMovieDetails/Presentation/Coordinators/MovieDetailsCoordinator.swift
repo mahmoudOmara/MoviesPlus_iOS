@@ -13,22 +13,14 @@ public enum MovieDetailsDestination: Hashable {
     case back
 }
 
-/// Protocol for paret coordinator that can handle movie details navigation
-@MainActor
-public protocol MovieDetailsCoordinatorDelegate: AnyObject {
-    func navigateBack()
-}
-
 @MainActor
 public final class MovieDetailsCoordinator: Coordinator, ObservableObject {
     public typealias Destination = MovieDetailsDestination
     
     // MARK: - Coordinator Properties
     
-    public var parentCoordinator: (any Coordinator)?
-    
-    private weak var delegate: MovieDetailsCoordinatorDelegate?
-    
+    public weak var parentCoordinator: (any Coordinator)?
+        
     @Published public var path = NavigationPath() //Never used as all navigations are delegated to parent coordinator
         
     // MARK: - Dependencies
@@ -37,9 +29,8 @@ public final class MovieDetailsCoordinator: Coordinator, ObservableObject {
     
     // MARK: - Initialization
     
-    public init(movieId: Int, delegate: MovieDetailsCoordinatorDelegate?) {
+    public init(movieId: Int) {
         self.movieId = movieId
-        self.delegate = delegate
     }
     
     // MARK: - Coordinator Methods
@@ -51,13 +42,13 @@ public final class MovieDetailsCoordinator: Coordinator, ObservableObject {
     public func navigate(to destination: MovieDetailsDestination) {
         switch destination {
         case .back:
-            delegate?.navigateBack()
+            (parentCoordinator as? (any InterModuleCoordinator))?.navigateBack()
         }
     }
     
-    // MARK: - Public Methods
+    // MARK: - Private Helpers
     
-    public func createMovieDetailsView() -> some View {
+    private func createMovieDetailsView() -> some View {
         // Create repository and view model
         let localDataSource = MovieDetailsLocalDataSource(swiftDataStack: SwiftDataStack.shared)
         let remoteDataSource = MovieDetailsRemoteDataSource(networkManager: NetworkManager.shared)

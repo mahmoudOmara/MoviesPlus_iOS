@@ -29,6 +29,9 @@ public struct MovieDetailsView: View {
             theme.colors.background.ignoresSafeArea()
             
             contentView
+                .overlay(alignment: .topLeading) {
+                    backButton
+                }
         }
         .navigationBarHidden(true)
         .onAppear {
@@ -61,6 +64,24 @@ public struct MovieDetailsView: View {
                 loadingView
             }
         }
+    }
+    
+    // MARK: - Content Views
+    
+    private var backButton: some View {
+        Button(action: viewModel.navigateBack) {
+            Image(systemName: "chevron.left")
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(theme.colors.accent)
+                .frame(width: 44, height: 44)
+                .background(
+                    Circle()
+                        .fill(theme.colors.onAccent)
+                )
+        }
+        .padding(.top, 24)
+        .padding(.leading, theme.spacing.medium)
     }
     
     private func movieDetailsContent(_ movieDetails: MovieDetails) -> some View {
