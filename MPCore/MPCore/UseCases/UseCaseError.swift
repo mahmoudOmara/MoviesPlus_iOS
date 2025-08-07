@@ -13,6 +13,7 @@ public enum UseCaseError: LocalizedError {
     case networkError
     case cacheError
     case tooShortSearchQuery(minimumLength: Int)
+    case invalidMovieId
     
     public var errorDescription: String? {
         switch self {
@@ -26,6 +27,8 @@ public enum UseCaseError: LocalizedError {
             return "Cache operation failed"
         case .tooShortSearchQuery(let minimumLength):
             return "Search query must be at least \(minimumLength) characters long"
+        case .invalidMovieId:
+            return "Invalid movie ID provided"
         }
     }
 }

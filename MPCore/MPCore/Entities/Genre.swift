@@ -9,7 +9,7 @@ import Foundation
 
 /// Domain entity representing a movie genre
 /// This is independent of persistence and API models
-public struct Genre: Identifiable {
+public struct Genre: Identifiable, Equatable, Hashable {
     
     // MARK: - Properties
     

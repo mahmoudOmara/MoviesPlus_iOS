@@ -6,22 +6,11 @@
 //
 
 import Foundation
-
-// MARK: - Genre Response Models
+import MPCore
 
 /// Root response model for TMDB genres endpoint
 public struct GenreResponseModel: Codable {
     
     /// Array of genre results
     public let genres: [GenreModel]
-}
-
-/// Individual genre model from TMDB API response
-public struct GenreModel: Codable {
-    
-    /// Genre ID from TMDB
-    public let id: Int
-    
-    /// Genre name
-    public let name: String
 }

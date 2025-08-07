@@ -24,10 +24,10 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
     @Published public var canLoadMore: Bool = true
     
     /// Direct published movies array to maintain scroll position
-    @Published public var movies: [Movie] = []
+    @Published public var movies: [Movie] = [] // duplicate source for state but to preserve the data between loading states (loadMore)
     
     /// Available genres for filtering
-    @Published public var genres: [Genre] = []
+    @Published public var genres: [Genre] = [] // duplicate source for state but to preserve the data between loading states (loadMore)
 
     // MARK: - Published Properties - Search State
 
