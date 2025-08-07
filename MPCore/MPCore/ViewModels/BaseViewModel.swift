@@ -11,8 +11,13 @@ import SwiftUI
 
 /// Base ViewModel class providing common functionality for all ViewModels
 /// Uses ViewModelState for unified state management
-open class BaseViewModel<T>: ObservableObject {
+open class BaseViewModel<T,C: Coordinator>: ObservableObject {
     
+    // MARK: - Coordinator
+    
+    /// Coordinator for handling navigation - use weak reference to prevent retain cycles
+    public weak var coordinator: C?
+
     // MARK: - Published Properties
     
     /// Common state property using ViewModelState enum
@@ -25,8 +30,9 @@ open class BaseViewModel<T>: ObservableObject {
     
     // MARK: - Initialization
     
-    public init() {}
-    
+    public init(coordinator: C? = nil) {
+        self.coordinator = coordinator
+    }
     // MARK: - Public Methods
     
     /// Sets the state to loading

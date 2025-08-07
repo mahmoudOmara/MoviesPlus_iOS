@@ -35,54 +35,52 @@ public struct MovieListView: View {
     // MARK: - Body
     
     public var body: some View {
-        NavigationView {
-            ZStack {
-                theme.colors.background.ignoresSafeArea()
-                
-                contentView
-            }
-            .navigationTitle("Movies")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    filterButton
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack {
-                        viewModeToggle
-                        searchButton
-                    }
-                }
-            }
-            .searchable(
-                text: $viewModel.searchText,
-                isPresented: $showingSearch,
-                placement: .navigationBarDrawer(displayMode: .automatic),
-                prompt: "Search movies..."
-            )
-            .searchSuggestions {
-                if showingSearch && !viewModel.recentSearches.isEmpty && viewModel.searchText.isEmpty {
-                    recentSearchSuggestions
-                }
+        ZStack {
+            theme.colors.background.ignoresSafeArea()
+            
+            contentView
+        }
+        .navigationTitle("Movies")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                filterButton
             }
             
-            .refreshable {
-                await refreshData()
-            }
-            .sheet(isPresented: $showingFilters) {
-                FilterBottomSheet(
-                    genres: viewModel.genres,
-                    currentFilter: viewModel.genreFilter,
-                    sortOption: viewModel.sortOption,
-                ) { filter, sort in
-                    viewModel.applySortAndGenreFilter(sortOption: sort, filter: filter)
+            ToolbarItem(placement: .navigationBarTrailing) {
+                HStack {
+                    viewModeToggle
+                    searchButton
                 }
             }
-            .onAppear {
-                if viewModel.movies.isEmpty {
-                    viewModel.loadInitialData()
-                }
+        }
+        .searchable(
+            text: $viewModel.searchText,
+            isPresented: $showingSearch,
+            placement: .navigationBarDrawer(displayMode: .automatic),
+            prompt: "Search movies..."
+        )
+        .searchSuggestions {
+            if showingSearch && !viewModel.recentSearches.isEmpty && viewModel.searchText.isEmpty {
+                recentSearchSuggestions
+            }
+        }
+        
+        .refreshable {
+            await refreshData()
+        }
+        .sheet(isPresented: $showingFilters) {
+            FilterBottomSheet(
+                genres: viewModel.genres,
+                currentFilter: viewModel.genreFilter,
+                sortOption: viewModel.sortOption,
+            ) { filter, sort in
+                viewModel.applySortAndGenreFilter(sortOption: sort, filter: filter)
+            }
+        }
+        .onAppear {
+            if viewModel.movies.isEmpty {
+                viewModel.loadInitialData()
             }
         }
     }
@@ -146,7 +144,7 @@ public struct MovieListView: View {
                         genres: viewModel.getGenres(for: movie.genreIds),
                         viewMode: .grid,
                         onTap: {
-                            
+                            viewModel.showMovieDetails(for: movie)
                         }
                     )
                     .id(movie.id)
@@ -165,7 +163,7 @@ public struct MovieListView: View {
                         genres: viewModel.getGenres(for: movie.genreIds),
                         viewMode: .list,
                         onTap: {
-                            
+                            viewModel.showMovieDetails(for: movie)
                         }
                     )
                     .id(movie.id)

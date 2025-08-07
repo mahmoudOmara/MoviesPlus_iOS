@@ -13,7 +13,7 @@ import MPCore
 /// ViewModel for the main movie list screen
 /// Handles movie loading, pagination, search, filtering, and user interactions
 /// Uses BaseViewModel for unified state management with tuple-based data model
-public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [Genre])> {
+public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [Genre]), MovieListingCoordinator> {
     
     // MARK: - Published Properties
     
@@ -66,16 +66,18 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
 
     // MARK: - Initialization
     
-    /// Initializes the ViewModel with required repository
-    /// - Parameter repository: Repository for data access
-    public init(repository: MovieRepositoryProtocol) {
+    /// Initializes the ViewModel with required repository and coordinator
+    /// - Parameters:
+    ///   - repository: Repository for data access
+    ///   - coordinator: Coordinator for handling navigation
+    public init(repository: MovieRepositoryProtocol, coordinator: MovieListingCoordinator? = nil) {
         self.repository = repository
         self.getGenresUseCase = GetGenresUseCase(repository: repository)
         self.getMoviesUseCase = GetMoviesUseCase(repository: repository)
         self.searchMoviesUseCase = SearchMoviesUseCase(repository: repository)
         self.filterAndSortMoviesUseCase = FilterAndSortMoviesUseCase(repository: repository)
         
-        super.init()
+        super.init(coordinator: coordinator)
         
         setupSearchBinding()
     }
@@ -152,6 +154,13 @@ public final class MovieListViewModel: BaseViewModel<(movies: [Movie], genres: [
     /// Toggles view mode between grid and list
     public func toggleViewMode() {
         viewMode = viewMode == .grid ? .list : .grid
+    }
+    
+    /// Navigates to movie details
+    /// - Parameter movie: Movie to show details for
+    @MainActor
+    public func showMovieDetails(for movie: Movie) {
+        coordinator?.navigate(to: .movieDetails(movieId: movie.id))
     }
     
     // MARK: - Public Methods - Search

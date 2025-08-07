@@ -25,16 +25,17 @@ public struct MovieDetailsView: View {
     // MARK: - Body
     
     public var body: some View {
-        NavigationView {
-            ZStack {
-                theme.colors.background.ignoresSafeArea()
-                
-                contentView
-            }
-            .navigationBarHidden(true)
-            .onAppear {
-                viewModel.loadInitialData()
-            }
+        ZStack {
+            theme.colors.background.ignoresSafeArea()
+            
+            contentView
+                .overlay(alignment: .topLeading) {
+                    backButton
+                }
+        }
+        .navigationBarHidden(true)
+        .onAppear {
+            viewModel.loadInitialData()
         }
     }
     
@@ -63,6 +64,24 @@ public struct MovieDetailsView: View {
                 loadingView
             }
         }
+    }
+    
+    // MARK: - Content Views
+    
+    private var backButton: some View {
+        Button(action: viewModel.navigateBack) {
+            Image(systemName: "chevron.left")
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(theme.colors.accent)
+                .frame(width: 44, height: 44)
+                .background(
+                    Circle()
+                        .fill(theme.colors.onAccent)
+                )
+        }
+        .padding(.top, 24)
+        .padding(.leading, theme.spacing.medium)
     }
     
     private func movieDetailsContent(_ movieDetails: MovieDetails) -> some View {
@@ -570,7 +589,14 @@ extension MovieDetailsSection {
 #if DEBUG
 struct MovieDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = MovieDetailsViewModel(movieId: 550, repository: MovieDetailsRepository(localDataSource: MovieDetailsLocalDataSource(swiftDataStack: try! .forTesting())))
+        let viewModel = MovieDetailsViewModel(
+            movieId: 550,
+            repository: MovieDetailsRepository(
+                remoteDataSource: MovieDetailsRemoteDataSource(networkManager: NetworkManager.shared),
+                localDataSource: MovieDetailsLocalDataSource(swiftDataStack: try! .forTesting())
+            ),
+            sharingService: SharingService()
+        )
         
         MovieDetailsView(viewModel: viewModel)
             .preferredColorScheme(.light)
