@@ -11,8 +11,8 @@ import MPMoviesListing
 
 @main
 struct MoviesAppApp: App {
-    let vm: MovieListViewModel
-    
+    private let appCoordinator: AppCoordinator
+
     init() {
         do {
             try SwiftDataStack.configureShared(with: [LocalMovieModel.self])
@@ -20,14 +20,12 @@ struct MoviesAppApp: App {
             fatalError("Failed to configure SwiftDataStack: \(error)")
         }
         
-        let repo = MovieRepository()
-        vm = MovieListViewModel(repository: repo)
-
+        self.appCoordinator = AppCoordinator()
     }
     
     var body: some Scene {
         WindowGroup {
-            MovieListView(viewModel: vm)
+            AppCoordinatorView(coordinator: appCoordinator)
                 .themedEnvironment()
         }
     }

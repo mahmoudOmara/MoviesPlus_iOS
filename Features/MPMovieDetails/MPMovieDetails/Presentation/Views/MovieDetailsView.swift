@@ -25,16 +25,14 @@ public struct MovieDetailsView: View {
     // MARK: - Body
     
     public var body: some View {
-        NavigationView {
-            ZStack {
-                theme.colors.background.ignoresSafeArea()
-                
-                contentView
-            }
-            .navigationBarHidden(true)
-            .onAppear {
-                viewModel.loadInitialData()
-            }
+        ZStack {
+            theme.colors.background.ignoresSafeArea()
+            
+            contentView
+        }
+        .navigationBarHidden(true)
+        .onAppear {
+            viewModel.loadInitialData()
         }
     }
     

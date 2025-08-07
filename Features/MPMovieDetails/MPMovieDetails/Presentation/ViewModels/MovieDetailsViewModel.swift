@@ -12,7 +12,7 @@ import MPCore
 
 /// ViewModel for the movie details screen
 /// Manages movie details, credits, reviews, and user interactions
-public final class MovieDetailsViewModel: BaseViewModel<MovieDetails> {
+public final class MovieDetailsViewModel: BaseViewModel<MovieDetails, MovieDetailsCoordinator> {
     
     // MARK: - Published Properties
     
@@ -34,12 +34,14 @@ public final class MovieDetailsViewModel: BaseViewModel<MovieDetails> {
     public init(
         movieId: Int,
         repository: MovieDetailsRepositoryProtocol,
+        coordinator: MovieDetailsCoordinator? = nil,
         sharingService: SharingServiceProtocol
     ) {
         self.movieId = movieId
         self.repository = repository
         self.getMovieDetailsUseCase = GetMovieDetailsUseCase(repository: repository)
         self.sharingService = sharingService
+        super.init(coordinator: coordinator)
     }
     
     // MARK: - Data Loading Methods
@@ -76,7 +78,12 @@ public final class MovieDetailsViewModel: BaseViewModel<MovieDetails> {
     
     /// Shares the current movie using the sharing service
     public func shareMovie() {
-        
+        guard let movieDetails = data else { return }
+        sharingService.shareMovie(
+            title: movieDetails.title,
+            movieId: movieDetails.id,
+            sourceView: nil
+        )
     }
     
     /// Retries failed operations
