@@ -421,6 +421,13 @@ class MockMovieDetailsRepository: MovieDetailsRepositoryProtocol {
                 .eraseToAnyPublisher()
         }
     }
+    
+    func reset() {
+        getMovieDetailsCalled = false
+        lastMovieId = nil
+        getMovieDetailsResult = .success(nil)
+        customMovieHandler = nil
+    }
 }
 
 // MARK: - Sample Data Extensions
